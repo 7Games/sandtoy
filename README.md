@@ -2,4 +2,4 @@
 
 ## WARNING UNFINISHED
 
-![screencast_1.gif]
+![GIF of simulation](screencast_1.gif)
