@@ -6,105 +6,103 @@ const CELL_SIZE: i32     = 8;
 const WINDOW_WIDTH: i32  = 640;
 const WINDOW_HEIGHT: i32 = 480;
 
-#[derive(PartialEq, Clone, Debug)]
-struct Point {
-    x: i32,
-    y: i32,
+enum CellType {
+    Sand = 0, // dynamic
+    // Stone, // static
 }
 
-impl Point {
-    fn new(x: i32, y: i32) -> Self {
+struct Cell {
+    x: i32,
+    y: i32,
+    cell_type: CellType,
+}
+
+//TODO: Add more cell types
+impl Cell {
+    fn new(x: i32, y: i32, cell_type: CellType) -> Self {
         Self {
             x,
             y,
-        }
-    }
-}
-
-#[derive(Debug)]
-enum CellType {
-    Sand = 0,
-    // Water,
-}
-
-#[derive(Debug)]
-struct Cell {
-    point: Point,
-    r#type: CellType,
-    grounded: bool,
-}
-
-impl Cell {
-    fn new(x: i32, y: i32, r#type: CellType) -> Self {
-        Self {
-            point: Point::new(x, y),
-            r#type,
-            grounded: false,
+            cell_type,
         }
     }
 
+    // TODO: Make raylib agnostic
     fn draw(&self, d: &mut RaylibDrawHandle) {
-        let color: Color = match self.r#type {
+        let color: Color = match self.cell_type {
             CellType::Sand  => Color::YELLOW,
             // CellType::Water => Color::BLUE,
         };
 
-        d.draw_rectangle(self.point.x * CELL_SIZE,
-                         self.point.y * CELL_SIZE,
+        d.draw_rectangle(self.x * CELL_SIZE,
+                         self.y * CELL_SIZE,
                          CELL_SIZE,
                          CELL_SIZE,
                          color);
     }
 }
 
-fn cell_exists(cells: &Vec<Cell>, point: Point) -> bool {
-    cells.iter().find(|cell| cell.point.x == point.x && cell.point.y == point.y).is_some()
+struct Cells {
+    data: Vec<Cell>,
 }
 
-fn get_neighbours(cells: &Vec<Cell>, point: Point) -> Vec<&Cell> {
-    cells.iter().filter(|cell| !(cell.point.x == point.x && cell.point.y == point.y) &&
-                        ((cell.point.x >= point.x - 1 && cell.point.x <= point.x + 1) &&
-                         (cell.point.y >= point.y - 1 && cell.point.y <= point.y + 1))).collect()
-}
-
-fn cell_below(neighbours: &Vec<&Cell>, cell: &Cell) -> bool {
-    neighbours.iter().find(|c|
-                           c.point.x == cell.point.x &&
-                           c.point.y == cell.point.y + 1).is_some()
-}
-
-fn cell_below_left(neighbours: &Vec<&Cell>, cell: &Cell) -> bool {
-    neighbours.iter().find(|c|
-                           c.point.x == cell.point.x - 1 &&
-                           c.point.y == cell.point.y + 1).is_some()
-}
-
-fn cell_below_right(neighbours: &Vec<&Cell>, cell: &Cell) -> bool {
-    neighbours.iter().find(|c|
-                           c.point.x == cell.point.x + 1 &&
-                           c.point.y == cell.point.y + 1).is_some()
-}
-
-fn update_cells(cells: &mut Vec<Cell>) {
-    for i in 0..cells.len() {
-        if cells[i].point.y >= WINDOW_HEIGHT / CELL_SIZE - 1 {
-            cells[i].grounded = true;
-            continue;
-        } else {
-            cells[i].grounded = false;
+impl Cells {
+    fn new() -> Self {
+        Self {
+            data: vec![],
         }
+    }
 
-        let cells_around = get_neighbours(cells, cells[i].point.clone());
-
-        if !cell_below(&cells_around, &cells[i]) {
-            cells[i].point.y += 1;
-        } else if !cell_below_left(&cells_around, &cells[i]) {
-                cells[i].point.y += 1;
-                cells[i].point.x -= 1;
-        } else if !cell_below_right(&cells_around, &cells[i]) {
-            cells[i].point.y += 1;
-            cells[i].point.x += 1;
+    pub fn add_cell(&mut self, x: i32, y: i32, cell_type: CellType) -> bool {
+        if !self.cell_exists(x, y) {
+            self.data.push(Cell::new(x, y, cell_type));
+            return true;
         }
+        return false;
+    }
+
+    fn cell_exists(&self, x: i32, y: i32) -> bool {
+        self.data.iter().find(|cell| cell.x == x && cell.y == y).is_some()
+    }
+
+    fn cell_below(&self, cell: &Cell) -> bool {
+        self.data.iter().find(|neighbour| (neighbour.x == cell.x && neighbour.y == cell.y + 1)).is_some()
+    }
+
+    fn cell_below_left(&self, cell: &Cell) -> bool {
+        self.data.iter().find(|neighbour| (neighbour.x == cell.x - 1 && neighbour.y == cell.y + 1)).is_some()
+    }
+
+    fn cell_below_right(&self, cell: &Cell) -> bool {
+        self.data.iter().find(|neighbour| (neighbour.x == cell.x + 1 && neighbour.y == cell.y + 1)).is_some()
+    }
+
+    pub fn count(&self) -> usize {
+        self.data.len()
+    }
+
+    pub fn update(&mut self) {
+        for i in 0..self.data.len() {
+            // TODO: Temp
+            if self.data[i].y >= WINDOW_HEIGHT / CELL_SIZE - 1 {
+                continue;
+            }
+
+            if !self.cell_below(&self.data[i]) {
+                self.data[i].y += 1;
+            } else if !self.cell_below_left(&self.data[i]) {
+                self.data[i].y += 1;
+                self.data[i].x -= 1;
+            } else if !self.cell_below_right(&self.data[i]) {
+                self.data[i].y += 1;
+                self.data[i].x += 1;
+            }
+        }
+    }
+
+    // TODO: Make raylib agnostic
+    pub fn draw_cells(&self, d: &mut RaylibDrawHandle) {
+        self.data.iter().for_each(|cell| cell.draw(d));
     }
 }
 
