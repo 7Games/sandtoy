@@ -35,6 +35,13 @@ impl Cells {
         self.data.iter().find(|neighbour| (neighbour.x == cell.x + 1 && neighbour.y == cell.y + 1)).is_some()
     }
 
+    pub fn cleanse(&mut self, top: i32, bottom: i32, left: i32, right: i32) {
+        self.data.retain_mut(|cell| {
+            cell.y > top && cell.y < bottom &&
+                cell.x > left && cell.y < right
+        });
+    }
+
     pub fn count(&self) -> usize {
         self.data.len()
     }

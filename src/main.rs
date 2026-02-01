@@ -16,7 +16,7 @@ fn main() {
 
     // ImGUI stuff
     let mut show_ui: bool = true;
-    let mut update_interval: f64 = 0.03;
+    let mut update_interval: f64 = 0.023;
     let pixels_available = ["Sand", "Stone"];
     let mut selected_pixel: i32 = 0;
     let mut about_open: bool = false;
@@ -70,5 +70,10 @@ fn main() {
         }
 
         window.draw(&cells);
+
+        cells.cleanse(-1,
+                      WINDOW_HEIGHT / CELL_SIZE,
+                      -1,
+                      WINDOW_WIDTH / CELL_SIZE);
     }
 }

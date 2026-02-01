@@ -26,7 +26,7 @@ impl Window {
             .size(width, height)
             .title(title)
             .build();
-        raylib.set_target_fps(60);
+        // raylib.set_target_fps(60);
 
         // Create ImGUI context
         let mut imgui_context = imgui::Context::create();
