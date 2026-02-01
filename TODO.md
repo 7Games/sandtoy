@@ -1,6 +1,6 @@
  - [-] Add blocks
    - [x] Sand (falls down)
-   - [ ] Stone (stays in place)
+   - [x] Stone (stays in place)
    - [ ] Water (flows)
    - [ ] Steam (floats up)
  - [ ] Move everything to separate files
