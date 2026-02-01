@@ -180,8 +180,8 @@ fn main() {
         if rl.is_mouse_button_down(MouseButton::MOUSE_BUTTON_LEFT) &&
             !cells.cell_exists(mouse_x, mouse_y) &&
             !(show_ui && (mouse_pos.x >= (WINDOW_WIDTH as f32) - ((WINDOW_WIDTH as f32) / 4.0))) {
-            cells.add_cell(mouse_x, mouse_y, CellType::Sand);
-        }
+                cells.add_cell(mouse_x, mouse_y, CellType::Sand);
+            }
 
         if rl.is_key_pressed(KeyboardKey::KEY_TAB) {
             show_ui = !show_ui;
