@@ -8,7 +8,7 @@ const WINDOW_HEIGHT: i32 = 720;
 
 enum CellType {
     Sand = 0, // dynamic
-    // Stone, // static
+    Stone,    // static
 }
 
 struct Cell {
@@ -31,7 +31,7 @@ impl Cell {
     fn draw(&self, d: &mut RaylibDrawHandle) {
         let color: Color = match self.cell_type {
             CellType::Sand  => Color::YELLOW,
-            // CellType::Water => Color::BLUE,
+            CellType::Stone => Color::GRAY,
         };
 
         d.draw_rectangle(self.x * CELL_SIZE,
@@ -83,19 +83,24 @@ impl Cells {
 
     pub fn update(&mut self) {
         for i in 0..self.data.len() {
-            // TODO: Temp
-            if self.data[i].y >= WINDOW_HEIGHT / CELL_SIZE - 1 {
-                continue;
-            }
+            match self.data[i].cell_type {
+                CellType::Stone => continue,
+                CellType::Sand => {
+                    // TODO: Temp
+                    if self.data[i].y >= WINDOW_HEIGHT / CELL_SIZE - 1 {
+                        continue;
+                    }
 
-            if !self.cell_below(&self.data[i]) {
-                self.data[i].y += 1;
-            } else if !self.cell_below_left(&self.data[i]) {
-                self.data[i].y += 1;
-                self.data[i].x -= 1;
-            } else if !self.cell_below_right(&self.data[i]) {
-                self.data[i].y += 1;
-                self.data[i].x += 1;
+                    if !self.cell_below(&self.data[i]) {
+                        self.data[i].y += 1;
+                    } else if !self.cell_below_left(&self.data[i]) {
+                        self.data[i].y += 1;
+                        self.data[i].x -= 1;
+                    } else if !self.cell_below_right(&self.data[i]) {
+                        self.data[i].y += 1;
+                        self.data[i].x += 1;
+                    }
+                }
             }
         }
     }
@@ -180,7 +185,11 @@ fn main() {
         if rl.is_mouse_button_down(MouseButton::MOUSE_BUTTON_LEFT) &&
             !cells.cell_exists(mouse_x, mouse_y) &&
             !(show_ui && (mouse_pos.x >= (WINDOW_WIDTH as f32) - ((WINDOW_WIDTH as f32) / 4.0))) {
-                cells.add_cell(mouse_x, mouse_y, CellType::Sand);
+                match selected_pixel {
+                    0 => cells.add_cell(mouse_x, mouse_y, CellType::Sand),
+                    1 => cells.add_cell(mouse_x, mouse_y, CellType::Stone),
+                    _ => panic!("What pixel?"),
+                };
             }
 
         if rl.is_key_pressed(KeyboardKey::KEY_TAB) {
