@@ -3,7 +3,9 @@
    - [x] Stone (stays in place)
    - [ ] Water (flows)
    - [ ] Steam (floats up)
- - [ ] Move everything to separate files
+ - [-] Move everything to separate files
+  - [x] Move out engine and cells
+  - [ ] Make it better
  - [ ] Add cursor indicator in world
    - [ ] Sprite
    - [ ] Cursor size (1x1, 2x2, 4x4, etc)
