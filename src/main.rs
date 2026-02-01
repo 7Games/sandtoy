@@ -196,15 +196,11 @@ fn main() {
 
                 d.clear_background(Color::BLACK);
 
-                // Draw cells
-                cells.iter().for_each(|cell| {
-                    cell.draw(&mut d);
-                });
+                cells.draw_cells(&mut d);
             }
 
             // Render
             renderer.render(&mut imgui, &mut d);
         }
     }
-
 }
