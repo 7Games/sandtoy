@@ -86,11 +86,6 @@ impl Cells {
             match self.data[i].cell_type {
                 CellType::Stone => continue,
                 CellType::Sand => {
-                    // TODO: Temp
-                    if self.data[i].y >= WINDOW_HEIGHT / CELL_SIZE - 1 {
-                        continue;
-                    }
-
                     if !self.cell_below(&self.data[i]) {
                         self.data[i].y += 1;
                     } else if !self.cell_below_left(&self.data[i]) {
@@ -103,6 +98,10 @@ impl Cells {
                 }
             }
         }
+
+        self.data.retain_mut(|cell| {
+            !(cell.y >= WINDOW_HEIGHT / CELL_SIZE)
+        });
     }
 
     // TODO: Make raylib agnostic
