@@ -6,9 +6,7 @@ pub struct Cells {
 
 impl Cells {
     pub fn new() -> Self {
-        Self {
-            data: vec![],
-        }
+        Self { data: vec![] }
     }
 
     pub fn add_cell(&mut self, x: i32, y: i32, cell_type: cell::CellType) -> bool {
@@ -20,14 +18,15 @@ impl Cells {
     }
 
     fn cell_exists(&self, x: i32, y: i32) -> bool {
-        self.data.iter().find(|cell| cell.x == x && cell.y == y).is_some()
+        self.data
+            .iter()
+            .find(|cell| cell.x == x && cell.y == y)
+            .is_some()
     }
 
     pub fn cleanse(&mut self, top: i32, bottom: i32, left: i32, right: i32) {
-        self.data.retain_mut(|cell| {
-            cell.y > top && cell.y < bottom &&
-                cell.x > left && cell.y < right
-        });
+        self.data
+            .retain_mut(|cell| cell.y > top && cell.y < bottom && cell.x > left && cell.y < right);
     }
 
     pub fn count(&self) -> usize {
