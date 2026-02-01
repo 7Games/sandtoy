@@ -1,0 +1,11 @@
+ - [-] Add blocks
+   - [x] Sand (falls down)
+   - [ ] Stone (stays in place)
+   - [ ] Water (flows)
+   - [ ] Steam (floats up)
+ - [ ] Move everything to separate files
+ - [ ] Add cursor indicator in world
+   - [ ] Sprite
+   - [ ] Cursor size (1x1, 2x2, 4x4, etc)
+ - [ ] Add eraser
+ - [ ] Lua scripting?
