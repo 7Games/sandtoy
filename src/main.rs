@@ -1,10 +1,10 @@
-use imgui::{Context, FontSource, Condition};
+use imgui::{Condition, Context, FontSource};
 use raylib::prelude::*;
 use raylib_imgui_rs::Renderer;
 
 const CELL_SIZE: i32     = 8;
-const WINDOW_WIDTH: i32  = 640;
-const WINDOW_HEIGHT: i32 = 480;
+const WINDOW_WIDTH: i32  = 1280;
+const WINDOW_HEIGHT: i32 = 720;
 
 enum CellType {
     Sand = 0, // dynamic
@@ -114,17 +114,21 @@ fn main() {
         .build();
     rl.set_target_fps(60);
 
+    // TODO: Clean-up {
     let mut imgui = Context::create();
     imgui.fonts().add_font(&[FontSource::DefaultFontData { config: None }]);
     imgui.set_ini_filename(None);
 
     let mut renderer = Renderer::create(&mut imgui, &mut rl, &thread);
 
-    let mut update_interval: f32 = 0.05;
+    let pixels_available = ["Sand", "Stone"];
+
+    let mut update_interval: f32 = 0.03;
     let mut next_update = rl.get_time() + update_interval as f64;
     let mut show_ui: bool = true;
+    let mut selected_pixel: i32 = 0;
 
-    let mut cells: Vec<Cell> = vec![];
+    let mut cells: Cells = Cells::new();
 
     let camera: Camera2D = Camera2D {
         offset: Vector2 { x: 0.0, y: 0.0 },
@@ -132,6 +136,7 @@ fn main() {
         rotation: 0.0,
         zoom: 1.0,
     };
+    // }
 
     while !rl.window_should_close() {
         renderer.update(&mut imgui, &mut rl);
@@ -143,28 +148,39 @@ fn main() {
         let mouse_y: i32 = (mouse_pos.y as i32) / CELL_SIZE;
 
         if current_time >= next_update {
-            update_cells(&mut cells);
+            cells.update();
             next_update = rl.get_time() + update_interval as f64;
         }
 
         // Make debug UI using ImGUI
         if show_ui {
-            ui.window("Starview debug window")
-                .size([300.0, 120.0], Condition::FirstUseEver)
-                .position([640.0-300.0-10.0, 480.0-120.0-10.0], Condition::FirstUseEver)
+            // TODO: Add cells selector
+            ui.window("Sandtoy")
+                .size([(WINDOW_WIDTH as f32) / 4.0, WINDOW_HEIGHT as f32], Condition::FirstUseEver)
+                .position([(WINDOW_WIDTH as f32) - ((WINDOW_WIDTH as f32) / 4.0), 0.0], Condition::FirstUseEver)
                 .resizable(false)
                 .movable(false)
                 .collapsible(false)
                 .build(|| {
                     let fps = rl.get_fps();
+                    ui.text_colored([0.7, 0.7, 0.7, 1.0], "== Info ==");
                     ui.text(format!("FPS: {}", fps));
-                    ui.text(format!("Cells: {}", cells.len()));
-                    ui.slider("Interval: ", 0.001, 0.5, &mut update_interval);
+                    ui.text(format!("Cells: {}", cells.count()));
+                    ui.slider("Interval", 0.001, 0.15, &mut update_interval);
+                    ui.separator();
+                    ui.text_colored([0.7, 0.7, 0.7, 1.0], "== Available Cells ==");
+                    ui.list_box("Cells", &mut selected_pixel, &pixels_available, 2);
+                    ui.separator();
+                    ui.text_colored([0.7, 0.7, 0.7, 1.0], "== Controls ==");
+                    ui.text("- TAB: Toggle UI");
+                    ui.text("- LEFT MOUSE: Place cell");
                 });
         }
 
-        if rl.is_mouse_button_down(MouseButton::MOUSE_BUTTON_LEFT) && !cell_exists(&cells, Point::new(mouse_x, mouse_y)) {
-            cells.push(Cell::new(mouse_x, mouse_y, CellType::Sand));
+        if rl.is_mouse_button_down(MouseButton::MOUSE_BUTTON_LEFT) &&
+            !cells.cell_exists(mouse_x, mouse_y) &&
+            !(show_ui && (mouse_pos.x >= (WINDOW_WIDTH as f32) - ((WINDOW_WIDTH as f32) / 4.0))) {
+            cells.add_cell(mouse_x, mouse_y, CellType::Sand);
         }
 
         if rl.is_key_pressed(KeyboardKey::KEY_TAB) {
