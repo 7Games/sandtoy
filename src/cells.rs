@@ -17,6 +17,10 @@ impl Cells {
         return false;
     }
 
+    pub fn remove_cell(&mut self, x: i32, y: i32) {
+        self.data.retain_mut(|cell| !(cell.x == x && cell.y == y));
+    }
+
     fn cell_exists(&self, x: i32, y: i32) -> bool {
         self.data
             .iter()

@@ -19,6 +19,7 @@ fn main() {
     let mut update_interval: f64 = 0.023;
     let pixels_available = ["Sand", "Stone"];
     let mut selected_pixel: i32 = 0;
+    let mut selected_tool:  i32 = 0;
     let mut about_open: bool = false;
 
     let mut cells: Cells = Cells::new();
@@ -37,11 +38,15 @@ fn main() {
         };
 
         if window.mouse_down(MOUSE_BUTTON_LEFT) {
-            match selected_pixel {
-                0 => cells.add_cell(mouse_x, mouse_y, cell::CellType::Sand),
-                1 => cells.add_cell(mouse_x, mouse_y, cell::CellType::Stone),
-                _ => panic!("What pixel?"),
-            };
+            if selected_tool == 0 {
+                match selected_pixel {
+                    0 => cells.add_cell(mouse_x, mouse_y, cell::CellType::Sand),
+                    1 => cells.add_cell(mouse_x, mouse_y, cell::CellType::Stone),
+                    _ => panic!("What pixel?"),
+                };
+            } else if selected_tool == 1 {
+                cells.remove_cell(mouse_x, mouse_y);
+            }
         }
 
         // if rl.is_mouse_button_down(MouseButton::MOUSE_BUTTON_LEFT) &&
@@ -64,6 +69,7 @@ fn main() {
         if show_ui {
             window.draw_ui(&cells,
                            &mut update_interval,
+                           &mut selected_tool,
                            &mut selected_pixel,
                            &pixels_available,
                            &mut about_open);

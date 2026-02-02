@@ -1,4 +1,5 @@
 use std::process::exit;
+use imgui::sys::ImVector_ImVec4;
 use raylib::prelude::*;
 
 use crate::cell;
@@ -116,6 +117,7 @@ impl Window {
 
     pub fn draw_ui(&mut self, cells: &cells::Cells,
                    mut update_interval: &mut f64,
+                   mut selected_tool: &mut i32,
                    mut selected_pixel: &mut i32,
                    pixels_available: &[&str],
                    about_open: &mut bool) {
@@ -135,7 +137,12 @@ impl Window {
                 imgui_frame.text(format!("Cells: {}", cells.count()));
                 imgui_frame.slider("Interval", 0.001, 0.15, &mut update_interval);
                 imgui_frame.separator();
-                imgui_frame.text_colored([0.7, 0.7, 0.7, 1.0], "== Available Cells ==");
+                imgui_frame.text_colored([0.7, 0.7, 0.7, 1.0], "== Tools ==");
+
+                imgui_frame.radio_button("Pen", selected_tool, 0);
+                imgui_frame.same_line();
+                imgui_frame.radio_button("Eraser", selected_tool, 1);
+
                 imgui_frame.list_box("Cells", &mut selected_pixel, &pixels_available, 2);
                 imgui_frame.separator();
                 imgui_frame.text_colored([0.7, 0.7, 0.7, 1.0], "== Controls ==");
