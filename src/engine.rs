@@ -90,14 +90,16 @@ impl Window {
         self.get_window_mouse_position().y
     }
 
-    pub fn draw(&mut self, cells: &cells::Cells) {
+    pub fn draw(&mut self, cells: &cells::Cells, mouse_x: i32, mouse_y: i32) {
         let mut d = self.raylib.begin_drawing(&self.raylib_thread);
 
+        // World
         {
             let mut d = d.begin_mode2D(self.camera);
 
             d.clear_background(Color::BLACK);
 
+            // Cells
             cells.for_each_mut(|cell| {
                 let color: Color = match cell.cell_type {
                     cell::CellType::Sand  => Color::YELLOW,
@@ -110,6 +112,32 @@ impl Window {
                                  self.cell_size,
                                  color);
             });
+
+            // Cursor
+            d.draw_line(mouse_x,
+                        mouse_y,
+                        mouse_x + self.cell_size,
+                        mouse_y,
+                        Color::WHITE);
+            d.draw_line(mouse_x,
+                        mouse_y,
+                        mouse_x,
+                        mouse_y + self.cell_size,
+                        Color::WHITE);
+            d.draw_line(mouse_x + self.cell_size,
+                        mouse_y + self.cell_size,
+                        mouse_x + self.cell_size,
+                        mouse_y,
+                        Color::WHITE);
+            d.draw_line(mouse_x + self.cell_size,
+                        mouse_y + self.cell_size,
+                        mouse_x,
+                        mouse_y + self.cell_size,
+                        Color::WHITE);
+
+            d.draw_pixel(mouse_x + (self.cell_size / 2) - 1,
+                         mouse_y + (self.cell_size / 2) - 1,
+                         Color::WHITE);
         }
 
         self.renderer.render(&mut self.imgui_context, &mut d);

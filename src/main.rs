@@ -75,7 +75,7 @@ fn main() {
                            &mut about_open);
         }
 
-        window.draw(&cells);
+        window.draw(&cells, mouse_x * CELL_SIZE, mouse_y * CELL_SIZE);
 
         cells.cleanse(-1,
                       WINDOW_HEIGHT / CELL_SIZE,
