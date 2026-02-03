@@ -1,5 +1,4 @@
 use std::process::exit;
-use imgui::sys::ImVector_ImVec4;
 use raylib::prelude::*;
 
 use crate::cell;
@@ -26,8 +25,8 @@ impl Window {
         let (mut raylib, raylib_thread) = raylib::init()
             .size(width, height)
             .title(title)
+            .resizable()
             .build();
-        // raylib.set_target_fps(60);
 
         // Create ImGUI context
         let mut imgui_context = imgui::Context::create();
@@ -64,6 +63,10 @@ impl Window {
 
     pub fn update(&mut self) {
         self.renderer.update(&mut self.imgui_context, &mut self.raylib);
+
+        // Update size
+        self.width = self.raylib.get_render_width();
+        self.height = self.raylib.get_render_height();
     }
 
     pub fn key_pressed(&self, key: KeyboardKey) -> bool {
@@ -145,7 +148,7 @@ impl Window {
 
     pub fn draw_ui(&mut self, cells: &cells::Cells,
                    mut update_interval: &mut f64,
-                   mut selected_tool: &mut i32,
+                   selected_tool: &mut i32,
                    mut selected_pixel: &mut i32,
                    pixels_available: &[&str],
                    about_open: &mut bool) {
@@ -153,8 +156,8 @@ impl Window {
 
         // Side panel
         imgui_frame.window("Sandtoy")
-            .size([(self.width as f32) / 4.0, self.height as f32], imgui::Condition::FirstUseEver)
-            .position([(self.width as f32) - ((self.width as f32) / 4.0), 0.0], imgui::Condition::FirstUseEver)
+            .size([(self.width as f32) / 4.0, self.height as f32], imgui::Condition::Always)
+            .position([(self.width as f32) - ((self.width as f32) / 4.0), 0.0], imgui::Condition::Always)
             .resizable(false)
             .movable(false)
             .collapsible(false)
