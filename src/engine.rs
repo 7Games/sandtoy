@@ -3,6 +3,7 @@ use raylib::prelude::*;
 
 use crate::cell;
 use crate::cells;
+use crate::status;
 
 pub struct Window {
     pub width: i32,
@@ -17,6 +18,8 @@ pub struct Window {
     imgui_context: imgui::Context,
 
     renderer: raylib_imgui_rs::Renderer, // Raylib && ImGUI
+
+    status: status::Status,
 }
 
 impl Window {
@@ -54,6 +57,7 @@ impl Window {
             camera,
             imgui_context,
             renderer,
+            status: status::Status::new(),
         }
     }
 
@@ -94,6 +98,7 @@ impl Window {
     }
 
     pub fn draw(&mut self, cells: &cells::Cells, mouse_x: i32, mouse_y: i32) {
+        let current_time: f64 = self.raylib.get_time();
         let mut d = self.raylib.begin_drawing(&self.raylib_thread);
 
         // World
@@ -143,6 +148,37 @@ impl Window {
                          Color::WHITE);
         }
 
+        // Draw status text
+        let mut i: i32 = 1;
+        let mut remove_message: Vec<usize> = vec![];
+        for msg in self.status.get_messages() {
+            if current_time >= (msg.time_created + msg.destroy_timer) {
+                remove_message.push((i-1) as usize);
+                continue;
+            }
+
+            let mut color: Color = Color::WHITE;
+
+            match msg.message_type {
+                status::StatusMessageType::Info    => {
+                },
+                status::StatusMessageType::Warning => {
+                    color = Color::YELLOW;
+                },
+                status::StatusMessageType::Error   => {
+                    color = Color::RED;
+                },
+            }
+
+            d.draw_text(&msg.message_text, 10, 32 * i, 32, color);
+
+            i += 1;
+        }
+
+        remove_message.iter().for_each(|idx| {
+            self.status.remove_at(*idx);
+        });
+
         self.renderer.render(&mut self.imgui_context, &mut d);
     }
 
@@ -153,6 +189,7 @@ impl Window {
                    pixels_available: &[&str],
                    about_open: &mut bool) {
         let imgui_frame: &mut imgui::Ui = self.imgui_context.new_frame();
+        let current_time: f64 = self.raylib.get_time();
 
         // Side panel
         imgui_frame.window("Sandtoy")
@@ -189,10 +226,10 @@ impl Window {
                 let sandtoy = imgui_frame.begin_menu("Sandtoy");
                 if sandtoy.is_some() {
                     if imgui_frame.menu_item("Save") {
-                        todo!("IMPLEMENT Save SYSTEM");
+                        self.status.add(String::from("IMPLEMENT Save SYSTEM"), status::StatusMessageType::Error, current_time, 5.0);
                     }
                     if imgui_frame.menu_item("Load") {
-                        todo!("IMPLEMENT Load SYSTEM");
+                        self.status.add(String::from("IMPLEMENT Load SYSTEM"), status::StatusMessageType::Error, current_time, 5.0);
                     }
                     if imgui_frame.menu_item("Screenshot") {
                         self.raylib.take_screenshot(&self.raylib_thread, &format!("{}-{}.png", "screenshot", "00"));
@@ -207,6 +244,7 @@ impl Window {
 
             if imgui_frame.menu_item("About") {
                 *about_open = !*about_open;
+                self.status.add(String::from("About opened"), status::StatusMessageType::Info, current_time, 5.0);
             }
 
             main.end();

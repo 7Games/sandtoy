@@ -3,6 +3,7 @@ use raylib::prelude::{KeyboardKey::*, MouseButton::*};
 mod cell;
 mod cells;
 mod engine;
+mod status;
 
 use engine::*;
 use cells::*;
