@@ -18,7 +18,7 @@ fn main() {
     // ImGUI stuff
     let mut show_ui: bool = true;
     let mut update_interval: f64 = 0.023;
-    let pixels_available = ["Sand", "Stone"];
+    let pixels_available = ["Sand", "Stone", "Anti-Sand"];
     let mut selected_pixel: i32 = 0;
     let mut selected_tool:  i32 = 0;
     let mut about_open: bool = false;
@@ -43,6 +43,7 @@ fn main() {
                 match selected_pixel {
                     0 => cells.add_cell(mouse_x, mouse_y, cell::CellType::Sand),
                     1 => cells.add_cell(mouse_x, mouse_y, cell::CellType::Stone),
+                    2 => cells.add_cell(mouse_x, mouse_y, cell::CellType::AntiSand),
                     _ => panic!("What pixel?"),
                 };
             } else if selected_tool == 1 {

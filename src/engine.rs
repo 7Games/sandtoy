@@ -110,8 +110,9 @@ impl Window {
             // Cells
             cells.for_each_mut(|cell| {
                 let color: Color = match cell.cell_type {
-                    cell::CellType::Sand  => Color::YELLOW,
-                    cell::CellType::Stone => Color::GRAY,
+                    cell::CellType::Sand     => Color::YELLOW,
+                    cell::CellType::Stone    => Color::GRAY,
+                    cell::CellType::AntiSand => Color::WHITE,
                 };
 
                 d.draw_rectangle(cell.x * self.cell_size,
