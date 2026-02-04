@@ -6,8 +6,8 @@
  - [-] Move everything to separate files
   - [x] Move out engine and cells
   - [ ] Make it better
- - [ ] Add cursor indicator in world
-   - [ ] Sprite
+ - [x] Add cursor indicator in world
+   - [x] Sprite
    - [ ] Cursor size (1x1, 2x2, 4x4, etc)
  - [ ] Add eraser
  - [ ] Lua scripting?
