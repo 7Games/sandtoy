@@ -270,8 +270,8 @@ impl Window {
                 .build(|| {
                     imgui_frame.text("Sandtoy");
                     imgui_frame.text("Interactive pixel simulation");
-                    imgui_frame.text("by svngms <svngms@starbloom.games>");
-                    imgui_frame.text_colored([0.4, 0.4, 0.8, 1.0], "https://codeberg.org/svngms/sandtoy");
+                    imgui_frame.text("by svn <benjamin@benjaminblack.me>");
+                    imgui_frame.text_colored([0.4, 0.4, 0.8, 1.0], "https://github.com/7Games/sandtoy");
                 });
         }
     }
