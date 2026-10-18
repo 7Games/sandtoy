@@ -221,6 +221,12 @@ impl Window {
                 imgui_frame.radio_button("Eraser", selected_tool, 1);
 
                 imgui_frame.list_box("Cells", &mut selected_pixel, &pixels_available, 10);
+
+                imgui_frame.separator();
+                if imgui_frame.button("Clear all cells") {
+                    self.status.add(String::from("Implement me"), status::StatusMessageType::Error, current_time, 5.0);
+                }
+
                 imgui_frame.separator();
                 imgui_frame.text_colored([0.7, 0.7, 0.7, 1.0], "== Controls ==");
                 imgui_frame.text("- TAB: Toggle UI");
@@ -235,10 +241,10 @@ impl Window {
                 let sandtoy = imgui_frame.begin_menu("Sandtoy");
                 if sandtoy.is_some() {
                     if imgui_frame.menu_item("Save") {
-                        self.status.add(String::from("IMPLEMENT Save SYSTEM"), status::StatusMessageType::Error, current_time, 5.0);
+                        self.status.add(String::from("IMPLEMENT Save SYSTEM"), status::StatusMessageType::Warning, current_time, 5.0);
                     }
                     if imgui_frame.menu_item("Load") {
-                        self.status.add(String::from("IMPLEMENT Load SYSTEM"), status::StatusMessageType::Error, current_time, 5.0);
+                        self.status.add(String::from("IMPLEMENT Load SYSTEM"), status::StatusMessageType::Warning, current_time, 5.0);
                     }
                     if imgui_frame.menu_item("Screenshot") {
                         self.raylib.take_screenshot(&self.raylib_thread, &format!("{}-{}.png", "screenshot", "00"));
