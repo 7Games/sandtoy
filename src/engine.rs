@@ -120,6 +120,7 @@ impl Window {
                     cell::CellType::Sand     => Color::YELLOW,
                     cell::CellType::Stone    => Color::GRAY,
                     cell::CellType::AntiSand => Color::WHITE,
+                    cell::CellType::Water    => Color::BLUE,
                 };
 
                 d.draw_rectangle(cell.x * self.cell_size,
@@ -219,7 +220,7 @@ impl Window {
                 imgui_frame.same_line();
                 imgui_frame.radio_button("Eraser", selected_tool, 1);
 
-                imgui_frame.list_box("Cells", &mut selected_pixel, &pixels_available, 2);
+                imgui_frame.list_box("Cells", &mut selected_pixel, &pixels_available, 10);
                 imgui_frame.separator();
                 imgui_frame.text_colored([0.7, 0.7, 0.7, 1.0], "== Controls ==");
                 imgui_frame.text("- TAB: Toggle UI");

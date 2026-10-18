@@ -70,7 +70,28 @@ impl Cells {
                         self.data[i].y -= 1;
                         self.data[i].x += 1;
                     }
-                }
+                },
+                cell::CellType::Water => {
+                    if !self.cell_exists(self.data[i].x, self.data[i].y + 1) {
+                        self.data[i].y += 1;
+                    } else if !self.cell_exists(self.data[i].x + 1, self.data[i].y + 1)
+                        && !self.cell_exists(self.data[i].x + 1, self.data[i].y)
+                    {
+                        self.data[i].y += 1;
+                        self.data[i].x += 1;
+                    } else if !self.cell_exists(self.data[i].x - 1, self.data[i].y + 1)
+                        && !self.cell_exists(self.data[i].x - 1, self.data[i].y)
+                    {
+                        self.data[i].y += 1;
+                        self.data[i].x -= 1;
+                    } else {
+                        if !self.cell_exists(self.data[i].x + 1, self.data[i].y) {
+                            self.data[i].x += 1;
+                        } else if !self.cell_exists(self.data[i].x - 1, self.data[i].y) {
+                            self.data[i].x -= 1;
+                        }
+                    }
+                },
             }
         }
     }

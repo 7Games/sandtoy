@@ -2,6 +2,7 @@ pub enum CellType {
     Sand = 0,
     Stone,
     AntiSand,
+    Water,
 }
 
 pub struct Cell {
