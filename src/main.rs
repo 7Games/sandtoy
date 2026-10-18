@@ -51,16 +51,6 @@ fn main() {
             }
         }
 
-        // if rl.is_mouse_button_down(MouseButton::MOUSE_BUTTON_LEFT) &&
-        //     !cells.cell_exists(mouse_x, mouse_y) &&
-        //     !(show_ui && (mouse_pos.x >= (WINDOW_WIDTH as f64) - ((WINDOW_WIDTH as f32) / 4.0))) {
-        //         match selected_pixel {
-        //             0 => cells.add_cell(mouse_x, mouse_y, cell::CellType::Sand),
-        //             1 => cells.add_cell(mouse_x, mouse_y, cell::CellType::Stone),
-        //             _ => panic!("What pixel?"),
-        //         };
-        //     }
-
         // Update cells
         if window.get_time() >= next_update {
             cells.update();
@@ -80,8 +70,8 @@ fn main() {
         window.draw(&cells, mouse_x * CELL_SIZE, mouse_y * CELL_SIZE);
 
         cells.cleanse(-1,
-                      WINDOW_HEIGHT / CELL_SIZE,
+                      window.get_height() / CELL_SIZE,
                       -1,
-                      WINDOW_WIDTH / CELL_SIZE);
+                      window.get_width() / CELL_SIZE);
     }
 }

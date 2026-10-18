@@ -73,6 +73,13 @@ impl Window {
         self.height = self.raylib.get_render_height();
     }
 
+    pub fn get_width(&self) -> i32 {
+        self.width
+    }
+    pub fn get_height(&self) -> i32 {
+        self.height
+    }
+
     pub fn key_pressed(&self, key: KeyboardKey) -> bool {
         self.raylib.is_key_pressed(key)
     }
